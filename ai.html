@@ -23,12 +23,6 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .neon-border-purple {
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-        }
-        .neon-border-blue {
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-        }
         .animate-bounce-slow {
             animation: bounce 2s infinite;
         }
@@ -37,8 +31,16 @@
             50% { transform: scale(1.05); opacity: 1; }
             100% { transform: scale(0.95); opacity: 0.8; }
         }
-        .ai-avatar-pulse {
-            animation: pulse-ring 3s infinite ease-in-out;
+        /* Custom Scrollbar for Chat */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -46,10 +48,10 @@
 
     <!-- 상단 네비게이션 바 -->
     <header class="glass-panel sticky top-0 z-50 px-4 py-3 border-b border-slate-700">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
             <div class="flex items-center gap-3">
                 <div class="bg-gradient-to-tr from-purple-600 to-indigo-500 p-2.5 rounded-xl shadow-lg">
-                    <i class="fa-solid font-black fa-robot text-2xl text-white"></i>
+                    <i class="fa-solid fa-robot text-2xl text-white"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
@@ -60,7 +62,7 @@
             </div>
 
             <!-- 스코어 및 프로필 정보 -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
                 <div class="bg-slate-800/90 border border-slate-700 rounded-full px-4 py-1.5 flex items-center gap-2">
                     <i class="fa-solid fa-star text-yellow-400 text-lg animate-pulse"></i>
                     <span class="text-xs text-slate-400">포인트:</span>
@@ -104,42 +106,47 @@
                         <span class="flex items-center gap-3"><i class="fa-solid fa-bullhorn text-lg"></i> 4단계: 말하는 AI 비서</span>
                         <i class="fa-solid fa-chevron-right text-xs"></i>
                     </button>
+                    <!-- 신규: 명예의 전당 탭 -->
+                    <button id="tab-btn-hall" onclick="switchTab('hall')" class="tab-btn bg-slate-800 text-yellow-400 font-bold p-3 rounded-xl flex items-center justify-between transition hover:bg-slate-700 border border-yellow-500/30">
+                        <span class="flex items-center gap-3"><i class="fa-solid fa-trophy text-lg text-yellow-400"></i> 🏆 명예의 전당 (랭킹)</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- 업적 배지 현황 -->
-            <div class="glass-panel rounded-2xl p-4 flex-1">
+            <div class="glass-panel rounded-2xl p-4">
                 <h2 class="text-sm font-bold text-slate-400 uppercase mb-3 tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-trophy text-yellow-400"></i> 나의 AI 배지 박스
+                    <i class="fa-solid fa-medal text-yellow-400"></i> 나의 AI 배지 박스
                 </h2>
                 <div class="grid grid-cols-2 gap-3">
                     <div id="badge-1" class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 flex flex-col items-center text-center opacity-40 transition">
-                        <div class="w-12 h-12 rounded-full bg-purple-900/50 flex items-center justify-center text-purple-400 text-xl mb-2">
+                        <div class="w-10 h-10 rounded-full bg-purple-900/50 flex items-center justify-center text-purple-400 text-lg mb-1">
                             <i class="fa-solid fa-brain"></i>
                         </div>
                         <span class="text-xs font-bold text-slate-200">AI 개념 박사</span>
-                        <span class="text-[10px] text-slate-400">퀘스트 3개 완료</span>
+                        <span class="text-[10px] text-slate-400">퀘스트 완료</span>
                     </div>
                     <div id="badge-2" class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 flex flex-col items-center text-center opacity-40 transition">
-                        <div class="w-12 h-12 rounded-full bg-blue-900/50 flex items-center justify-center text-blue-400 text-xl mb-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center text-blue-400 text-lg mb-1">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </div>
                         <span class="text-xs font-bold text-slate-200">프롬프트 마스터</span>
-                        <span class="text-[10px] text-slate-400">텍스트 AI 대화성공</span>
+                        <span class="text-[10px] text-slate-400">텍스트 AI 대화</span>
                     </div>
                     <div id="badge-3" class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 flex flex-col items-center text-center opacity-40 transition">
-                        <div class="w-12 h-12 rounded-full bg-pink-900/50 flex items-center justify-center text-pink-400 text-xl mb-2">
+                        <div class="w-10 h-10 rounded-full bg-pink-900/50 flex items-center justify-center text-pink-400 text-lg mb-1">
                             <i class="fa-solid fa-paint-brush"></i>
                         </div>
                         <span class="text-xs font-bold text-slate-200">AI 화가</span>
-                        <span class="text-[10px] text-slate-400">이미지 AI 제작</span>
+                        <span class="text-[10px] text-slate-400">이미지 생성 완료</span>
                     </div>
                     <div id="badge-4" class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 flex flex-col items-center text-center opacity-40 transition">
-                        <div class="w-12 h-12 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 text-xl mb-2">
+                        <div class="w-10 h-10 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 text-lg mb-1">
                             <i class="fa-solid fa-volume-high"></i>
                         </div>
                         <span class="text-xs font-bold text-slate-200">AI 보이스 리스너</span>
-                        <span class="text-[10px] text-slate-400">음성 생성 3회</span>
+                        <span class="text-[10px] text-slate-400">음성 생성 성공</span>
                     </div>
                 </div>
             </div>
@@ -168,7 +175,7 @@
                             <span class="bg-indigo-500/20 text-indigo-300 text-xs px-3 py-1 rounded-full border border-indigo-500/30 font-semibold">STAGE 1</span>
                             <h2 class="text-2xl font-black text-white mt-1">AI 비서 기본 퀘스트 Challenge</h2>
                         </div>
-                        <div id="quest-progress" class="text-sm font-bold text-indigo-400">1 / 4 문제 완료</div>
+                        <div id="quest-progress" class="text-sm font-bold text-indigo-400">1 / 4 문제</div>
                     </div>
 
                     <!-- 퀘스트 문제 영역 -->
@@ -178,8 +185,8 @@
                                 <i class="fa-solid fa-circle-question"></i>
                             </div>
                             <div>
-                                <h3 id="quest-title" class="text-lg font-bold text-white mb-2">Q1. AI 비서(Artificial Intelligence Assistant)란 무엇일까요?</h3>
-                                <p id="quest-desc" class="text-sm text-slate-300 leading-relaxed">우리가 말이나 글로 명령을 내리면, 음악을 틀어주거나 질문에 답하고 일정을 관리해 주는 똑똑한 소프트웨어를 찾아보세요!</p>
+                                <h3 id="quest-title" class="text-lg font-bold text-white mb-2">Q1. AI 비서란 무엇일까요?</h3>
+                                <p id="quest-desc" class="text-sm text-slate-300 leading-relaxed">설명을 읽고 가장 올바른 답을 골라보세요!</p>
                             </div>
                         </div>
 
@@ -201,8 +208,10 @@
                     <button id="prev-quest-btn" onclick="changeQuest(-1)" class="px-4 py-2 bg-slate-800 text-slate-400 hover:text-white rounded-xl text-sm font-bold transition">
                         <i class="fa-solid fa-arrow-left mr-1"></i> 이전 문제
                     </button>
-                    <button id="next-quest-btn" onclick="changeQuest(1)" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold transition shadow-lg">
-                        다음 문제 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    <!-- 수정을 적용하여 다음 버튼 이벤트 업데이트 -->
+                    <button id="next-quest-btn" onclick="handleNextQuestClick()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
+                        <span id="next-quest-btn-text">다음 문제</span>
+                        <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -215,14 +224,14 @@
                             <span class="bg-blue-500/20 text-blue-300 text-xs px-3 py-1 rounded-full border border-blue-500/30 font-semibold">STAGE 2</span>
                             <h2 class="text-2xl font-black text-white mt-1">스마트 텍스트 AI 비서와의 대화</h2>
                         </div>
-                        <span class="text-xs text-slate-400"><i class="fa-solid fa-bolt text-yellow-400"></i> Gemini 3 Flash 연동</span>
+                        <span class="text-xs text-slate-400"><i class="fa-solid fa-bolt text-yellow-400"></i> Gemini 3 Flash</span>
                     </div>
                     <p class="text-xs text-slate-300 mb-4">AI 비서에게 다양한 질문이나 명령을 내려보세요! 예: "초등학생을 위한 우주 비밀 3가지 알려줘"</p>
 
                     <!-- 채팅 창 메인 -->
                     <div id="chat-history" class="bg-slate-900/80 rounded-xl p-4 h-64 overflow-y-auto space-y-3 border border-slate-700/80 mb-4">
                         <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold text-white">AI</div>
+                            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold text-white shrink-0">AI</div>
                             <div class="bg-slate-800 text-slate-200 p-3 rounded-2xl rounded-tl-none text-xs max-w-[80%] leading-relaxed border border-slate-700">
                                 안녕하세요! 저는 여러분의 디지털 학습을 돕는 AI 비서입니다. 궁금한 점이 있거나 도움이 필요하면 무엇이든 물어보세요! 😊
                             </div>
@@ -232,7 +241,7 @@
 
                 <!-- 프롬프트 입력창 -->
                 <div class="flex gap-2">
-                    <input type="text" id="chat-input" placeholder="AI 비서에게 프롬프트를 입력하세요..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
+                    <input type="text" id="chat-input" onkeypress="if(event.key==='Enter') sendChatMessage()" placeholder="AI 비서에게 프롬프트를 입력하세요..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
                     <button onclick="sendChatMessage()" id="chat-send-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl font-bold text-sm transition flex items-center gap-2">
                         <span>전송</span>
                         <i class="fa-solid fa-paper-plane"></i>
@@ -240,7 +249,7 @@
                 </div>
             </div>
 
-            <!-- TAB 3: 그림 그리는 AI 비서 (Gemini Nano Banana/Flash Image API) -->
+            <!-- TAB 3: 그림 그리는 AI 비서 (Gemini Image API) -->
             <div id="view-image" class="view-panel hidden glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[500px]">
                 <div>
                     <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
@@ -248,35 +257,35 @@
                             <span class="bg-pink-500/20 text-pink-300 text-xs px-3 py-1 rounded-full border border-pink-500/30 font-semibold">STAGE 3</span>
                             <h2 class="text-2xl font-black text-white mt-1">상상을 그리는 AI 비서 화가</h2>
                         </div>
-                        <span class="text-xs text-slate-400"><i class="fa-solid fa-sparkles text-pink-400"></i> Gemini Image Gen</span>
+                        <span class="text-xs text-slate-400"><i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> Gemini Image Gen</span>
                     </div>
-                    <p class="text-xs text-slate-300 mb-4">원하는 그림의 모습을 자세히 설명해주면 AI 비서가 순식간에 시각화해 줍니다!</p>
+                    <p class="text-xs text-slate-300 mb-4">원하는 그림의 모습을 설명하거나 예시 태그를 클릭해 보세요!</p>
 
                     <!-- 프롬프트 제안 태그 -->
                     <div class="flex flex-wrap gap-2 mb-4">
-                        <button onclick="setImagePrompt('우주복을 입은 귀여운 고양이가 달에서 케이크를 먹는 3D 캐릭터')" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg">🐱 우주 고양이</button>
-                        <button onclick="setImagePrompt('미래의 친환경 스마트시티 공원 모습, 맑은 하늘과 하늘을 나는 자동차')" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg">🚀 미래 스마트시티</button>
-                        <button onclick="setImagePrompt('귀여운 로봇 비서가 학생에게 공부를 가르쳐주는 따뜻한 일러스트')" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg">🤖 AI 로봇 비서</button>
+                        <button onclick="setImagePrompt('우주복을 입은 귀여운 고양이가 달에서 케이크를 먹는 3D 캐릭터')" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg transition">🐱 우주 고양이</button>
+                        <button onclick="setImagePrompt('미래의 친환경 스마트시티 공원 모습, 맑은 하늘과 하늘을 나는 자동차')" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg transition">🚀 미래 스마트시티</button>
+                        <button onclick="setImagePrompt('귀여운 로봇 비서가 학생에게 공부를 가르쳐주는 따뜻한 일러스트')" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg transition">🤖 AI 로봇 비서</button>
                     </div>
 
                     <!-- 생성 결과 박스 -->
                     <div class="bg-slate-900/80 border border-slate-700 rounded-xl h-64 flex items-center justify-center overflow-hidden relative mb-4">
                         <div id="image-placeholder" class="text-center p-6 text-slate-500">
                             <i class="fa-regular fa-image text-5xl mb-3"></i>
-                            <p class="text-xs">아래 프롬프트를 입력하고 '그림 그리기' 버튼을 누르세요.</p>
+                            <p class="text-xs">프롬프트를 입력하거나 위 태그를 누른 후 '그림 생성' 버튼을 클릭하세요.</p>
                         </div>
                         <img id="generated-image" class="hidden w-full h-full object-contain" alt="AI Generated Image">
                         <!-- 로딩 스피너 -->
                         <div id="image-loading" class="hidden absolute inset-0 bg-slate-900/90 flex flex-col items-center justify-center gap-3">
                             <div class="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
-                            <p class="text-xs font-bold text-pink-300 animate-pulse">AI 비서가 그림을 그리는 중입니다...</p>
+                            <p class="text-xs font-bold text-pink-300 animate-pulse">AI 비서가 멋진 그림을 그리는 중입니다...</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 프롬프트 입력 영역 -->
                 <div class="flex gap-2">
-                    <input type="text" id="image-prompt-input" placeholder="어떤 그림을 그리고 싶나요? (예: 안경을 쓴 스마트한 곰)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-pink-500 transition">
+                    <input type="text" id="image-prompt-input" onkeypress="if(event.key==='Enter') generateAIImage()" placeholder="어떤 그림을 그리고 싶나요? (예: 안경을 쓴 스마트한 곰)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-pink-500 transition">
                     <button onclick="generateAIImage()" id="image-gen-btn" class="bg-pink-600 hover:bg-pink-500 text-white px-5 py-3 rounded-xl font-bold text-sm transition flex items-center gap-2">
                         <span>그림 생성</span>
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -292,9 +301,9 @@
                             <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30 font-semibold">STAGE 4</span>
                             <h2 class="text-2xl font-black text-white mt-1">목소리로 말하는 AI 비서 (TTS)</h2>
                         </div>
-                        <span class="text-xs text-slate-400"><i class="fa-solid fa-microphone text-emerald-400"></i> Gemini 2.5 Voice</span>
+                        <span class="text-xs text-slate-400"><i class="fa-solid fa-microphone text-emerald-400"></i> Gemini Voice</span>
                     </div>
-                    <p class="text-xs text-slate-300 mb-4">AI 비서에게 말하고 싶은 문장과 목소리 톤을 선택하면 음성으로 전달해 줍니다!</p>
+                    <p class="text-xs text-slate-300 mb-4">AI 비서에게 말하고 싶은 문장과 목소리 톤을 선택하면 생생한 목소리로 전달해 줍니다!</p>
 
                     <!-- 음성 설정 옵션 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -310,9 +319,9 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-400 mb-2">말하기 스타일 힌트</label>
                             <select id="tone-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                                <option value="친절하고 쾌활한 목소리로 말해줘:">친절하고 쾌활하게</option>
-                                <option value="자상한 선생님처럼 따뜻하게 말해줘:">따뜻한 선생님 톤</option>
-                                <option value="신나는 로봇 비서처럼 말해줘:">SF 로봇 스타일</option>
+                                <option value="Say cheerfully in Korean:">친절하고 쾌활하게</option>
+                                <option value="Say warmly like a kindly teacher in Korean:">따뜻한 선생님 톤</option>
+                                <option value="Say excitingly like a futuristic robot in Korean:">SF 로봇 스타일</option>
                             </select>
                         </div>
                     </div>
@@ -331,7 +340,7 @@
                             </div>
                             <div>
                                 <h4 class="text-xs font-bold text-white" id="voice-status-title">음성 생성 준비됨</h4>
-                                <p class="text-[10px] text-slate-400" id="voice-status-desc">문장을 입력하고 재생을 누르세요.</p>
+                                <p class="text-[10px] text-slate-400" id="voice-status-desc">문장을 입력하고 재생 버튼을 누르세요.</p>
                             </div>
                         </div>
                         <!-- 로딩 Indicator -->
@@ -348,6 +357,50 @@
                         <i class="fa-solid fa-play"></i>
                         <span>AI 목소리로 듣기</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- TAB 5: 명예의 전당 (신규 기능 추가) -->
+            <div id="view-hall" class="view-panel hidden glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[500px]">
+                <div>
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
+                        <div>
+                            <span class="bg-yellow-500/20 text-yellow-300 text-xs px-3 py-1 rounded-full border border-yellow-500/30 font-semibold">LEADERBOARD</span>
+                            <h2 class="text-2xl font-black text-white mt-1">🏆 디지털드림단 명예의 전당</h2>
+                        </div>
+                        <span class="text-xs text-yellow-400 font-bold"><i class="fa-solid fa-crown"></i> 최고 탐험가 도전</span>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-6">수업 활동에서 획득한 포인트를 바탕으로 나의 닉네임을 명예의 전당에 등록하세요!</p>
+
+                    <!-- 점수 등록 폼 -->
+                    <div class="bg-slate-800/90 border border-slate-700 p-4 rounded-xl mb-6 flex flex-col sm:flex-row gap-3 items-center">
+                        <div class="flex-1 w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">탐험가 이름 (닉네임)</label>
+                            <input type="text" id="player-name-input" placeholder="이름이나 닉네임을 입력하세요 (예: AI드림1등)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400">
+                        </div>
+                        <div class="text-center sm:text-right w-full sm:w-auto">
+                            <span class="block text-[10px] text-slate-400 mb-1">현재 내 포인트</span>
+                            <span id="submit-score-display" class="text-xl font-black text-yellow-400">0 점</span>
+                        </div>
+                        <button onclick="registerLeaderboard()" class="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-slate-900 font-extrabold px-5 py-3 rounded-xl text-xs transition shadow-lg shrink-0">
+                            랭킹 등록하기 ✨
+                        </button>
+                    </div>
+
+                    <!-- 랭킹 리스트 -->
+                    <div class="space-y-2">
+                        <h3 class="text-xs font-bold text-slate-400 mb-3 flex items-center justify-between">
+                            <span>TOP 랭킹 순위표</span>
+                            <span class="text-[10px] text-slate-500">* 실시간 업로드</span>
+                        </h3>
+                        <div id="leaderboard-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                            <!-- JS 동적 생성 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 text-center border-t border-slate-700/60">
+                    <p class="text-xs text-slate-400">모든 단계 퀘스트와 AI 체험 활동에 참가할 때마다 새로운 포인트가 적립됩니다!</p>
                 </div>
             </div>
 
@@ -380,6 +433,13 @@
         let completedQuests = new Set();
         let currentQuestIdx = 0;
         
+        // 명예의 전당 샘플 초기 데이터
+        let leaderboardData = [
+            { name: "드림탐험가", score: 120, rank: "AI 마스터" },
+            { name: "스마트꿈나무", score: 85, rank: "스마트 탐험가" },
+            { name: "알파고친구", score: 50, rank: "스마트 탐험가" }
+        ];
+
         // 타이머 관련 변수
         let timerSeconds = 300;
         let timerInterval = null;
@@ -435,6 +495,7 @@
         window.onload = function() {
             renderQuest();
             updateScoreUI();
+            renderLeaderboard();
         };
 
         function switchTab(tabName) {
@@ -458,7 +519,7 @@
         }
 
         /* ==========================
-           STAGE 1: 퀘스트 기능
+           STAGE 1: 퀘스트 기능 (수정 완료)
         ========================== */
         function renderQuest() {
             const currentData = questData[currentQuestIdx];
@@ -483,9 +544,17 @@
                 optionsContainer.appendChild(btn);
             });
 
-            // 이전/다음 버튼 제어
+            // 이전 버튼 활성화 처리
             document.getElementById('prev-quest-btn').disabled = (currentQuestIdx === 0);
             document.getElementById('prev-quest-btn').style.opacity = (currentQuestIdx === 0) ? "0.4" : "1";
+
+            // 다음 문제 버튼 텍스트 변경 로직 (마지막 문제일 때 '다음 단계로 이동')
+            const nextBtnText = document.getElementById('next-quest-btn-text');
+            if (currentQuestIdx === questData.length - 1) {
+                nextBtnText.innerText = "다음 단계로 이동 (2단계 AI 대화)";
+            } else {
+                nextBtnText.innerText = "다음 문제";
+            }
         }
 
         function checkAnswer(option, btnElement) {
@@ -517,6 +586,15 @@
             }
         }
 
+        // '다음 버튼' 동작 수정: 마지막 문제인 경우 2단계(Chat) 탭으로 이동
+        function handleNextQuestClick() {
+            if (currentQuestIdx === questData.length - 1) {
+                switchTab('chat');
+            } else {
+                changeQuest(1);
+            }
+        }
+
         function changeQuest(dir) {
             const newIdx = currentQuestIdx + dir;
             if (newIdx >= 0 && newIdx < questData.length) {
@@ -532,6 +610,8 @@
 
         function updateScoreUI() {
             document.getElementById('user-score').innerText = userScore;
+            document.getElementById('submit-score-display').innerText = `${userScore} 점`;
+            
             const rankElem = document.getElementById('user-rank');
             if (userScore >= 100) rankElem.innerText = "AI 마스터";
             else if (userScore >= 50) rankElem.innerText = "스마트 탐험가";
@@ -547,7 +627,7 @@
         }
 
         /* ==========================
-           STAGE 2: Gemini 텍스트 API 대화
+           STAGE 2: Gemini 텍스트 API 대화 (수정 완료)
         ========================== */
         async function sendChatMessage() {
             const input = document.getElementById('chat-input');
@@ -581,9 +661,8 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
 
             try {
-                // Gemini API 호출
                 const systemPrompt = "당신은 디지털드림단 초등학생 수업을 돕는 친절하고 똑똑한 AI 비서입니다. 학생 눈높이에 맞게 쉽고 흥미롭게 대답해주세요.";
-                const apiKey = ""; // Runtime key auto-injection
+                const apiKey = ""; // Runtime Key
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
@@ -596,21 +675,24 @@
                 });
 
                 const data = await response.json();
-                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "죄송해요, 대답을 완성하지 못했어요.";
+                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-                // 로딩 메시지를 실제 답변으로 교체
-                aiLoadingBubble.querySelector('div:nth-child(2)').innerHTML = escapeHtml(aiReply).replace(/\n/g, '<br>');
-                unlockBadge('badge-2');
-                addScore(10);
+                if (aiReply) {
+                    aiLoadingBubble.querySelector('div:nth-child(2)').innerHTML = escapeHtml(aiReply).replace(/\n/g, '<br>');
+                    unlockBadge('badge-2');
+                    addScore(15);
+                } else {
+                    aiLoadingBubble.querySelector('div:nth-child(2)').innerText = "AI 답변을 불러오지 못했습니다. 다시 시도해 주세요.";
+                }
 
             } catch (err) {
-                aiLoadingBubble.querySelector('div:nth-child(2)').innerText = "통신 중 오류가 발생했습니다.";
+                aiLoadingBubble.querySelector('div:nth-child(2)').innerText = "AI 연결 중 오류가 발생했습니다. 질문을 다시 적어주세요.";
             }
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
         /* ==========================
-           STAGE 3: Gemini Image API (Nano Banana / Flash Image)
+           STAGE 3: Gemini Image API (수정 완료)
         ========================== */
         function setImagePrompt(promptText) {
             document.getElementById('image-prompt-input').value = promptText;
@@ -619,7 +701,10 @@
         async function generateAIImage() {
             const promptInput = document.getElementById('image-prompt-input');
             const prompt = promptInput.value.trim();
-            if (!prompt) return;
+            if (!prompt) {
+                alert("그리고 싶은 그림 프롬프트를 입력하세요!");
+                return;
+            }
 
             const loadingElem = document.getElementById('image-loading');
             const placeholderElem = document.getElementById('image-placeholder');
@@ -647,7 +732,18 @@
                 });
 
                 const result = await response.json();
-                const base64Data = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                
+                // 이미지 추출 탐색
+                let base64Data = null;
+                const candidate = result.candidates?.[0];
+                if (candidate && candidate.content && candidate.content.parts) {
+                    for (const part of candidate.content.parts) {
+                        if (part.inlineData && part.inlineData.data) {
+                            base64Data = part.inlineData.data;
+                            break;
+                        }
+                    }
+                }
 
                 if (base64Data) {
                     imgElem.src = `data:image/png;base64,${base64Data}`;
@@ -655,11 +751,11 @@
                     unlockBadge('badge-3');
                     addScore(20);
                 } else {
-                    alert("그림을 생성하지 못했습니다. 다른 프롬프트로 시도해보세요.");
+                    alert("그림 생성 결과를 얻지 못했습니다. 조금 더 명확한 프롬프트로 시도해 보세요.");
                     placeholderElem.classList.remove('hidden');
                 }
             } catch (err) {
-                alert("이미지 생성 과정에서 오류가 발생했습니다.");
+                alert("이미지 생성 중 네트워크 오류가 발생했습니다.");
                 placeholderElem.classList.remove('hidden');
             } finally {
                 loadingElem.classList.add('hidden');
@@ -667,13 +763,13 @@
         }
 
         /* ==========================
-           STAGE 4: Gemini TTS API (Voice Assistant)
+           STAGE 4: Gemini TTS API (수정 완료)
         ========================== */
         let voicePlayCount = 0;
         async function generateAndPlayTTS() {
             const textInput = document.getElementById('tts-input').value.trim();
             if (!textInput) {
-                alert("AI 비서가 읽을 문장을 입력해 주세요!");
+                alert("AI 비서가 읽어줄 문장을 입력해 주세요!");
                 return;
             }
 
@@ -687,7 +783,7 @@
 
             loading.classList.remove('hidden');
             statusTitle.innerText = "음성 생성 중...";
-            statusDesc.innerText = "AI 비서가 목소리를 준비하고 있습니다.";
+            statusDesc.innerText = "AI 비서가 목소리를 다듬고 있습니다.";
 
             try {
                 const apiKey = "";
@@ -716,10 +812,12 @@
                 const audioData = part?.inlineData?.data;
                 const mimeType = part?.inlineData?.mimeType;
 
-                if (audioData && mimeType && mimeType.startsWith("audio/")) {
-                    // PCM 16Bit -> WAV 변환 로직
-                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                if (audioData) {
+                    let sampleRate = 24000;
+                    if (mimeType) {
+                        const match = mimeType.match(/rate=(\d+)/);
+                        if (match) sampleRate = parseInt(match[1], 10);
+                    }
                     
                     const pcmBuffer = base64ToArrayBuffer(audioData);
                     const pcm16 = new Int16Array(pcmBuffer);
@@ -730,29 +828,30 @@
                     audio.play();
 
                     statusTitle.innerText = "음성 재생 중 🔊";
-                    statusDesc.innerText = `캐릭터 (${voiceName}) 목소리로 말하는 중...`;
+                    statusDesc.innerText = `캐릭터 (${voiceName}) 목소리로 말씀하고 계십니다!`;
 
                     audio.onended = () => {
                         statusTitle.innerText = "재생 완료";
-                        statusDesc.innerText = "다시 들으려면 재생 버튼을 클릭하세요.";
+                        statusDesc.innerText = "다시 들으려면 재생 버튼을 누르세요.";
                     };
 
                     voicePlayCount++;
-                    if(voicePlayCount >= 3) {
-                        unlockBadge('badge-4');
-                    }
+                    unlockBadge('badge-4');
                     addScore(15);
                 } else {
-                    alert("음성 생성 결과를 가져오지 못했습니다.");
+                    alert("음성 생성에 실패했습니다. 다시 시도해주세요.");
+                    statusTitle.innerText = "생성 실패";
+                    statusDesc.innerText = "문장을 변경한 후 다시 재생해보세요.";
                 }
             } catch (err) {
-                alert("음성 합성 중 오류가 발생했습니다.");
+                alert("음성 합성 처리 중 오류가 발생했습니다.");
+                statusTitle.innerText = "오류 발생";
             } finally {
                 loading.classList.add('hidden');
             }
         }
 
-        /* --- Audio Utility Helpers --- */
+        /* --- Audio Helper Functions --- */
         function base64ToArrayBuffer(base64) {
             const binaryString = window.atob(base64);
             const len = binaryString.length;
@@ -767,24 +866,20 @@
             const buffer = new ArrayBuffer(44 + pcm16Array.length * 2);
             const view = new DataView(buffer);
 
-            // RIFF header
             writeString(view, 0, 'RIFF');
             view.setUint32(4, 36 + pcm16Array.length * 2, true);
             writeString(view, 8, 'WAVE');
-            // fmt chunk
             writeString(view, 12, 'fmt ');
             view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true); // PCM format
+            view.setUint16(20, 1, true); // PCM
             view.setUint16(22, 1, true); // Mono
             view.setUint32(24, sampleRate, true);
             view.setUint32(28, sampleRate * 2, true);
             view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true); // 16 bits
-            // data chunk
+            view.setUint16(34, 16, true);
             writeString(view, 36, 'data');
             view.setUint32(40, pcm16Array.length * 2, true);
 
-            // Write PCM samples
             let offset = 44;
             for (let i = 0; i < pcm16Array.length; i++, offset += 2) {
                 view.setInt16(offset, pcm16Array[i], true);
@@ -801,6 +896,68 @@
 
         function escapeHtml(str) {
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        /* ==========================
+           STAGE 5: 명예의 전당 (신규 기능 추가)
+        ========================== */
+        function registerLeaderboard() {
+            const nameInput = document.getElementById('player-name-input');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                alert("명예의 전당에 올려놓을 탐험가 이름을 입력해 주세요!");
+                return;
+            }
+
+            let rankTitle = "초보 탐험가";
+            if (userScore >= 100) rankTitle = "AI 마스터";
+            else if (userScore >= 50) rankTitle = "스마트 탐험가";
+
+            // 새로운 기록 등록 및 내림차순 정렬
+            leaderboardData.push({ name: name, score: userScore, rank: rankTitle });
+            leaderboardData.sort((a, b) => b.score - a.score);
+
+            renderLeaderboard();
+            nameInput.value = '';
+
+            // 폭죽 효과
+            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+            alert(`🎉 축하합니다! ${name}님의 ${userScore}점이 명예의 전당에 등록되었습니다!`);
+        }
+
+        function renderLeaderboard() {
+            const listElem = document.getElementById('leaderboard-list');
+            listElem.innerHTML = '';
+
+            leaderboardData.forEach((item, index) => {
+                const rankNum = index + 1;
+                let medalIcon = `<span class="w-6 font-black text-slate-400 text-center">${rankNum}</span>`;
+                let bgStyle = "bg-slate-900/60 border-slate-700/60";
+
+                if (rankNum === 1) {
+                    medalIcon = `<i class="fa-solid fa-crown text-yellow-400 text-base"></i>`;
+                    bgStyle = "bg-yellow-950/30 border-yellow-500/50 text-yellow-200";
+                } else if (rankNum === 2) {
+                    medalIcon = `<i class="fa-solid fa-medal text-slate-300 text-base"></i>`;
+                    bgStyle = "bg-slate-800/80 border-slate-600/60";
+                } else if (rankNum === 3) {
+                    medalIcon = `<i class="fa-solid fa-award text-amber-600 text-base"></i>`;
+                    bgStyle = "bg-amber-950/20 border-amber-700/40";
+                }
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `p-3 rounded-xl border flex items-center justify-between text-xs transition ${bgStyle}`;
+                itemDiv.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 flex justify-center">${medalIcon}</div>
+                        <span class="font-bold text-slate-100">${escapeHtml(item.name)}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-purple-300 font-semibold">${item.rank}</span>
+                    </div>
+                    <span class="font-black text-yellow-400 text-sm">${item.score} 점</span>
+                `;
+                listElem.appendChild(itemDiv);
+            });
         }
 
         /* ==========================
