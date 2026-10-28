@@ -663,7 +663,7 @@
             try {
                 const systemPrompt = "당신은 디지털드림단 초등학생 수업을 돕는 친절하고 똑똑한 AI 비서입니다. 학생 눈높이에 맞게 쉽고 흥미롭게 대답해주세요.";
                 const apiKey = ""; // Runtime Key
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -675,9 +675,13 @@
                 });
 
                 const data = await response.json();
-                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                let aiReply = "";
 
-                if (aiReply) {
+                if (data.candidates && data.candidates[0]?.content?.parts) {
+                    aiReply = data.candidates[0].content.parts.map(p => p.text || "").join("\n");
+                }
+
+                if (aiReply.trim()) {
                     aiLoadingBubble.querySelector('div:nth-child(2)').innerHTML = escapeHtml(aiReply).replace(/\n/g, '<br>');
                     unlockBadge('badge-2');
                     addScore(15);
@@ -686,6 +690,7 @@
                 }
 
             } catch (err) {
+                console.error(err);
                 aiLoadingBubble.querySelector('div:nth-child(2)').innerText = "AI 연결 중 오류가 발생했습니다. 질문을 다시 적어주세요.";
             }
             chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -716,33 +721,27 @@
 
             try {
                 const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImages?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: prompt }]
-                        }],
-                        generationConfig: {
-                            responseModalities: ['TEXT', 'IMAGE']
+                        prompt: prompt,
+                        config: {
+                            numberOfImages: 1,
+                            outputMimeType: "image/png",
+                            aspectRatio: "1:1"
                         }
                     })
                 });
 
                 const result = await response.json();
                 
-                // 이미지 추출 탐색
+                // Imagen API 이미지 데이터 수신 처리
                 let base64Data = null;
-                const candidate = result.candidates?.[0];
-                if (candidate && candidate.content && candidate.content.parts) {
-                    for (const part of candidate.content.parts) {
-                        if (part.inlineData && part.inlineData.data) {
-                            base64Data = part.inlineData.data;
-                            break;
-                        }
-                    }
+                if (result.generatedImages && result.generatedImages[0]?.image?.imageBytes) {
+                    base64Data = result.generatedImages[0].image.imageBytes;
                 }
 
                 if (base64Data) {
@@ -751,11 +750,12 @@
                     unlockBadge('badge-3');
                     addScore(20);
                 } else {
-                    alert("그림 생성 결과를 얻지 못했습니다. 조금 더 명확한 프롬프트로 시도해 보세요.");
+                    alert("그림 생성 결과를 얻지 못했습니다. 다른 표현으로 시도해 보세요.");
                     placeholderElem.classList.remove('hidden');
                 }
             } catch (err) {
-                alert("이미지 생성 중 네트워크 오류가 발생했습니다.");
+                console.error(err);
+                alert("이미지 생성 중 오류가 발생했습니다.");
                 placeholderElem.classList.remove('hidden');
             } finally {
                 loadingElem.classList.add('hidden');
@@ -787,7 +787,7 @@
 
             try {
                 const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
                 const payload = {
                     contents: [{ parts: [{ text: fullPrompt }] }],
@@ -808,9 +808,19 @@
                 });
 
                 const result = await response.json();
-                const part = result?.candidates?.[0]?.content?.parts?.[0];
-                const audioData = part?.inlineData?.data;
-                const mimeType = part?.inlineData?.mimeType;
+                
+                let audioData = null;
+                let mimeType = null;
+
+                if (result.candidates && result.candidates[0]?.content?.parts) {
+                    for (const part of result.candidates[0].content.parts) {
+                        if (part.inlineData && part.inlineData.data) {
+                            audioData = part.inlineData.data;
+                            mimeType = part.inlineData.mimeType;
+                            break;
+                        }
+                    }
+                }
 
                 if (audioData) {
                     let sampleRate = 24000;
@@ -839,11 +849,12 @@
                     unlockBadge('badge-4');
                     addScore(15);
                 } else {
-                    alert("음성 생성에 실패했습니다. 다시 시도해주세요.");
+                    alert("음성 생성에 실패했습니다. 문장을 변경하여 다시 시도해 보세요.");
                     statusTitle.innerText = "생성 실패";
                     statusDesc.innerText = "문장을 변경한 후 다시 재생해보세요.";
                 }
             } catch (err) {
+                console.error(err);
                 alert("음성 합성 처리 중 오류가 발생했습니다.");
                 statusTitle.innerText = "오류 발생";
             } finally {
